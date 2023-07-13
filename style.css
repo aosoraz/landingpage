@@ -145,7 +145,7 @@ li a {
 .box3,
 .box4 {
   padding: 80px;
-  background-color: lightgray;
+  
   border-radius: 10px;
   border: 5px solid #2d6dcc;
 }
@@ -157,4 +157,40 @@ li a {
   font-size: 16px;
   flex-wrap: wrap;
   max-width: 150px;
+}
+
+.quotes {
+  height: 300px;
+  justify-content: center;
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  background-color: #e5e7eb;
+}
+
+.isiquotes {
+  text-align: center;
+  font-size: 36px;
+  font-style: italic;
+  color: #1f2937;
+}
+
+.asalquotes {
+  font-weight: bolder;
+  font-size: 18px;
+  padding-right: 750px;
+  text-align: right;
+}
+
+.footer {
+  min-height: 80px;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  background-color: #1f2937;
+}
+
+.footer p {
+  color: #e5e7eb;
+  text-align: center;
 }
