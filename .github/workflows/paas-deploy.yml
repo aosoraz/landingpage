@@ -24,19 +24,21 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: $${{ secrets.REGISTRY_USER }}
-          password: $${{ secrets.REGISTRY_TOKEN }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build and push container image (railpack)
         id: build
         run: |
           set -euo pipefail
+          export PATH="$HOME/.local/bin:/usr/local/bin:$PATH"
           IMAGE="ghcr.io/aosoraz/landingpage:${GITHUB_SHA::12}"
           if [ -f Dockerfile ]; then
             docker build -t "$IMAGE" .
           else
             docker run --rm --privileged -d --name buildkit moby/buildkit:latest
             export BUILDKIT_HOST=docker-container://buildkit
+            sleep 2
             curl -sSL https://railpack.com/install.sh | sh
             railpack build . --name "$IMAGE"
           fi
@@ -46,11 +48,11 @@ jobs:
       - name: Notify Keterix control plane
         if: always()
         env:
-          JOB_STATUS: $${{ job.status }}
-          IMAGE_TAG: $${{ steps.build.outputs.image }}
-          CALLBACK_URL: $${{ secrets.KETERIX_CALLBACK_URL }}
-          CALLBACK_SECRET: $${{ secrets.CALLBACK_HMAC_SECRET }}
-          COMMIT_MSG: $${{ github.event.head_commit.message }}
+          JOB_STATUS: ${{ job.status }}
+          IMAGE_TAG: ${{ steps.build.outputs.image }}
+          CALLBACK_URL: ${{ secrets.KETERIX_CALLBACK_URL }}
+          CALLBACK_SECRET: ${{ secrets.CALLBACK_HMAC_SECRET }}
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
         run: |
           set -euo pipefail
           if [ -z "$IMAGE_TAG" ]; then
